@@ -1,265 +1,217 @@
 import 'package:flutter/material.dart';
 
-import '../model/student_details.dart';
+enum GenderType {
+  m('male'),
+  fe('female');
 
-enum Gender { male, female }
+  final String gender;
 
-enum City { newyork, california, sydney, berlin, paris }
-
-class StudentDetailsView extends StatefulWidget {
-  const StudentDetailsView({super.key});
-
-  @override
-  State<StudentDetailsView> createState() => _StudentDetailsViewState();
+  const GenderType(this.gender);
 }
 
-class _StudentDetailsViewState extends State<StudentDetailsView> {
-  @override
-  late StudentDetails studentDetails;
-  Gender? _selectedGender;
+class StudentDetailView extends StatefulWidget {
+  const StudentDetailView({super.key});
 
+  @override
+  State<StudentDetailView> createState() => _StudentDetailViewState();
+}
+
+class _StudentDetailViewState extends State<StudentDetailView> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final ageController = TextEditingController();
   final addressController = TextEditingController();
   final cityController = TextEditingController();
+  GenderType _genderGroup = GenderType.m;
+  String? selectedCity;
+  List<String> cityList = ['Kahtmandu', 'Lalitpur', 'Bhaktapur'];
+  late final List<DropdownMenuEntry<String>> _cityEntries =
+      <DropdownMenuEntry<String>>[];
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    firstNameController.dispose();
-    lastNameController.dispose();
-    ageController.dispose();
-    addressController.dispose();
-    cityController.dispose();
-    super.dispose();
+  final _formKey = GlobalKey<FormState>();
+    @override
+  void initState() {
+    for (String city in cityList) {
+      _cityEntries.add(DropdownMenuEntry(label: city, value: city));
+    }
+    super.initState();
   }
+  
 
-  void saveStudent() {
-    studentDetails = StudentDetails();
-    setState(() {
-      studentDetails.saveStudent(firstNameController.text);
-    });
-  }
-
-  final myKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-        colorScheme:
-            ColorScheme.fromSwatch().copyWith(primary: Colors.green.shade500),
-      ),
-      child: Scaffold(
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text("Student Details"),
+          title: const Text(
+            'Student Detail Form',
+          ),
           centerTitle: true,
-          elevation: 0,
+          elevation: 3.0,
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 8,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.orange,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.green,
-                        width: 2,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(9),
-                    hintText: 'Enter your first name',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Enter your first name';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.orange,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.green,
-                        width: 2,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(9),
-                    hintText: 'Enter your Last name',
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.orange,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.green,
-                        width: 2,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(9),
-                    hintText: 'Enter your Age',
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Select a gender",
-                  ),
-                ),
-                RadioListTile<Gender>(
-                  title: const Text('Male'),
-                  value: Gender.male,
-                  groupValue: _selectedGender,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        _selectedGender = value;
-                      },
-                    );
-                  },
-                ),
-                RadioListTile<Gender>(
-                  title: const Text('Female'),
-                  value: Gender.female,
-                  groupValue: _selectedGender,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        _selectedGender = value;
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.orange,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.green,
-                        width: 2,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(9),
-                    hintText: 'Enter your Address',
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                DropdownButtonFormField<City>(
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.orange,
-                        width: 2,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.green,
-                        width: 2,
-                      ),
-                    ),
-                    labelText: "Select a city",
-                    border: const OutlineInputBorder(),
-                  ),
-                  items: City.values.map((City city) {
-                    return DropdownMenuItem<City>(
-                      value: city,
-                      child: Text(city.toString().split('.').last),
-                    );
-                  }).toList(),
-                  onChanged: (City? selectedCity) {
-                    // Handle selected city
-                  },
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      null;
-                    },
-                    child: const Text(
-                      "Save Student",
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (myKey.currentState!.validate()) {
-                        print('this is test');
+            padding: const EdgeInsets.all(18.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: firstNameController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please, enter first name';
                       }
+                      return null;
                     },
-                    child: const Text(
-                      "Display Student",
+                    decoration: const InputDecoration(
+                      labelText: 'First Name',
+                      hintText: 'E.g Sanjiv',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    controller: lastNameController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please, enter your last name';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Last Name',
+                      hintText: 'E.g Shrestha',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    controller: ageController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please, enter your age';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Age',
+                      hintText: 'E.g 44',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Text(
+                    'Select gender',
+                    textAlign: TextAlign.left,
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Male',
+                    ),
+                    leading: Radio(
+                        value: GenderType.m,
+                        groupValue: _genderGroup,
+                        onChanged: (GenderType? value) {
+                          setState(() {
+                            _genderGroup = value!;
+                          });
+                        }),
+                  ),
+                  ListTile(
+                    title: const Text('Female'),
+                    leading: Radio(
+                        value: GenderType.fe,
+                        groupValue: _genderGroup,
+                        onChanged: (GenderType? value) {
+                          setState(() {
+                            _genderGroup = value!;
+                          });
+                        }),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    controller: addressController,
+                    validator: (value) {
+                      return value == null || value.isEmpty
+                          ? 'Please, enter your address'
+                          : null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Address',
+                      hintText: 'E.g Kathmandu',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    minLines: 4,
+                    maxLines: 8,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  DropdownMenu(
+                    width: 350.0,
+                    dropdownMenuEntries: _cityEntries,
+                    initialSelection: cityList[0],
+                    controller: cityController,
+                    label: const Text('Select your city'),
+                    onSelected: (value) {
+                      setState(() {
+                        selectedCity = value;
+                      });
+                      print(selectedCity);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {}
+                      },
+                      child: const Text('Save Student'),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/displayStudentRoute');
+                      },
+                      child: const Text('Display Details'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
